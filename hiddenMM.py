@@ -87,7 +87,14 @@ def viterbi(x,states,a_0,a,e):
 
 		for y in states:
 			(prob,state) = max((V[t-1][y0]*a[y0][y]*e[y][x[t]],y0)for y0 in states )
-			V[t]
+			V[t][y] = prob
+			newpath[y] = path[state] + [y]
+		path = newpath
+	n=0
+	if len(x) != 1:
+		n = len(x)-1	
+	(prob,state) = max((V[n][y],y) for y in states)
+	print (prob, path[state])	
 
 
 if __name__ == '__main__':
@@ -99,4 +106,7 @@ if __name__ == '__main__':
 	emission_probability = {'dynamic':{'Occupied':0.5,'Free':0.4,'Unknown':0.1},'static':{'Occupied':0.8,'Free':0.1,'Unknown':0.1}} # Heuristically determined 
 	ex_observation = ('Free','Free','Free','Free','Free','Occupied','Occupied','Occupied','Occupied','Unknown','Occupied','Free','Occupied','Occupied','Occupied','Occupied')
 	#fwd_pr,bkw_pr, posterior_pr = forwardBackward(ex_observation,states,start_probability,transition_probability,emission_probability,end_state)
-	forwards(ex_observation,states,start_probability,transition_probability,emission_probability,states[0])
+	#forwards(ex_observation,states,start_probability,transition_probability,emission_probability,states[0])
+	print ex_observation
+	viterbi(ex_observation,states,start_probability,transition_probability,emission_probability)
+
