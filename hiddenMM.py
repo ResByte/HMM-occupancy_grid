@@ -89,6 +89,11 @@ def forwards(x,states,a_0,a,e,end_state):
 
 
 def viterbi(x,states,a_0,a,e):
+	"""
+	This is Veterbi algorithm to calculate Most probable sequence of Hidden variables. 
+	Assumption: state transition probability, initial state probability and emission probability are known
+	Goal: argmax(p(z_1:t|x_1:t))
+	"""
 	V= [{}]
 	path = {}
 
