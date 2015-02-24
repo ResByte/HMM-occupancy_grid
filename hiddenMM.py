@@ -52,26 +52,41 @@ def forwards(x,states,a_0,a,e,end_state):
 	This is a forwards algorithm for Hidden Markov Model. 
 	Assumption: State transition probability(a), initial state probability(a_0) and observation probability(e) are known. 
 	Goal: Comput the marginal posterior p(z_t | x_1:t)
+	alpha = joint probability posterior 
+	p_curr = marginal posterior probability 
+	The algorithm is from Murphy et al. (Machine Learning a probabilistic approach)
 	"""
+	#TODO: Not accurate 
 	L = len(x) #length of observation
 	fwd = []
 	alpha_prev = {}
+	const_prev = {}
+	p_prev = {}
 	for i, x_i in enumerate(x):
 		alpha_curr = {}
+		bel_curr = {}
+		p_curr={}
+		for st in states:
+			if i != 0:
+				bel_curr[st]=sum(a[k][st]*p_prev[k] for k in states) # Estimate belief of the states from previous estimates
 		for st in states:
 			if i == 0:
-				prev_aplha_sum = a_0[st]
+				
+				const_curr = sum(a_0[s0]*e[s0][x_i] for s0 in states) #constant for normalization initializer
+				alpha_curr[st] = (a_0[st]*e[st][x_i])
 			else:
-				prev_aplha_sum = sum(alpha_prev[k]*a[k][st] for k in states)
-			alpha_curr[st]  = e[st][x_i]*prev_aplha_sum
-		fwd.append(alpha_curr)
+				
+				const_curr = sum(bel_curr[k]*e[k][x_i] for k in states)
+				alpha_curr[st] =e[st][x_i]*(sum(alpha_prev[k]*a[k][st] for k in states))
+			p_curr[st] = alpha_curr[st]/const_curr
+
+		fwd.append(p_curr)
 		alpha_prev = alpha_curr
+		p_prev = p_curr
 	
-	p_fwd = sum(alpha_curr[k]*a[k][end_state] for k in states)
-	posterior = []
-	for i in xrange(L):
-		posterior.append({st: fwd[i][st]/p_fwd for st in states})
-	print posterior
+	for i in fwd:
+		print max(i[k] for k in states)
+
 
 def viterbi(x,states,a_0,a,e):
 	V= [{}]
@@ -106,7 +121,7 @@ if __name__ == '__main__':
 	emission_probability = {'dynamic':{'Occupied':0.5,'Free':0.4,'Unknown':0.1},'static':{'Occupied':0.8,'Free':0.1,'Unknown':0.1}} # Heuristically determined 
 	ex_observation = ('Free','Free','Free','Free','Free','Occupied','Occupied','Occupied','Occupied','Unknown','Occupied','Free','Occupied','Occupied','Occupied','Occupied')
 	#fwd_pr,bkw_pr, posterior_pr = forwardBackward(ex_observation,states,start_probability,transition_probability,emission_probability,end_state)
-	#forwards(ex_observation,states,start_probability,transition_probability,emission_probability,states[0])
-	print ex_observation
-	viterbi(ex_observation,states,start_probability,transition_probability,emission_probability)
+	forwards(ex_observation,states,start_probability,transition_probability,emission_probability,states[0])
+	#print ex_observation
+	#viterbi(ex_observation,states,start_probability,transition_probability,emission_probability)
 
