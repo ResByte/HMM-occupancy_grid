@@ -47,7 +47,7 @@ def forwardBackward(x,states,a_0,a,e,end_st):
 	assert p_fwd == p_bkw
 	return fwd,bkw,posterior
 
-def forwards(x,states,a_0,a,e,end_state):
+def forwards(x,states,a_0,a,e):
 	"""
 	This is a forwards algorithm for Hidden Markov Model. 
 	Assumption: State transition probability(a), initial state probability(a_0) and observation probability(e) are known. 
@@ -123,10 +123,10 @@ if __name__ == '__main__':
 	observation = ('Occupied','Free','Unknown')
 	start_probability = {'dynamic': 0.5,'static':0.5}  #with uniform initial probability
 	transition_probability = {'dynamic':{'dynamic':0.5,'static':0.5},'static':{'dynamic':0.5,'static':0.5}}
-	emission_probability = {'dynamic':{'Occupied':0.5,'Free':0.4,'Unknown':0.1},'static':{'Occupied':0.8,'Free':0.1,'Unknown':0.1}} # Heuristically determined 
+	emission_probability = {'dynamic':{'Occupied':0.5,'Free':0.4,'Unknown':0.1},'static':{'Occupied':0.3,'Free':0.6,'Unknown':0.1}} # Heuristically determined 
 	ex_observation = ('Free','Free','Free','Free','Free','Occupied','Occupied','Occupied','Occupied','Unknown','Occupied','Free','Occupied','Occupied','Occupied','Occupied')
 	#fwd_pr,bkw_pr, posterior_pr = forwardBackward(ex_observation,states,start_probability,transition_probability,emission_probability,end_state)
-	forwards(ex_observation,states,start_probability,transition_probability,emission_probability,states[0])
+	forwards(ex_observation,states,start_probability,transition_probability,emission_probability)
 	#print ex_observation
 	#viterbi(ex_observation,states,start_probability,transition_probability,emission_probability)
 
